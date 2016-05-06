@@ -1,5 +1,6 @@
 from django.shortcuts import render,HttpResponse
 from rest_framework import generics,authentication,viewsets,permissions
+from rest_framework.filters import SearchFilter,OrderingFilter
 from django.db.models import Q
 from .models import Design
 from .permissions import IsOwnerOrReadOnly
@@ -15,6 +16,8 @@ def home (request):
 class PostListAPIView(generics.ListAPIView):
     # permission_classes = [IsAuthenticated]
     serializer_class = DesignSerializer
+    filter_backends = [SearchFilter, OrderingFilter] # api/?search=indian&ordering=theme_name&q=...
+    search_fields=['tag_name','theme_name','theme_name','user__first_name']
 
     def get_queryset(self, *args, **kwargs):
         queryset_list = Design.objects.all()
