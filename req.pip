@@ -1,0 +1,7 @@
+-e git+https://github.com/kevinastone/django-api-rest-and-angular.git@9656336776cba8b019f02ceae51d379e4807a137#egg=API_Example
+Django==1.9.6
+django-extensions==1.6.6
+djangorestframework==3.3.3
+Pillow==3.2.0
+six==1.10.0
+Werkzeug==0.11.9
