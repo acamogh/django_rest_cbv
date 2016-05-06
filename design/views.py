@@ -11,6 +11,7 @@ from rest_framework.permissions import (AllowAny,IsAuthenticated,IsAdminUser,IsA
 def home (request):
     return HttpResponse('hello')
 
+# list
 class PostListAPIView(generics.ListAPIView):
     # permission_classes = [IsAuthenticated]
     serializer_class = DesignSerializer
@@ -21,11 +22,15 @@ class PostListAPIView(generics.ListAPIView):
         print query
         if query:
             queryset_list = queryset_list.filter(
-                Q(theme_name__icontains=query)
+                Q(theme_name__icontains=query)|
+                Q(tag_name__icontains=query)|
+                Q(user__first_name=query)|
+                Q(tag_name__icontains=query)
+
             ).distinct()
         return queryset_list
 
-
+# create
 class PostCreateAPIView(generics.CreateAPIView):
     queryset = Design.objects.all()
     serializer_class = DesignCreateSerializer
@@ -33,23 +38,24 @@ class PostCreateAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+#  detail
 class PostDetailAPIView(generics.RetrieveAPIView):
     queryset = Design.objects.all()
     serializer_class = DesignSerializer
-    lookup_field = 'slug'
+    lookup_field = 'theme_name'
 
+# update
 class PostUpdateAPIView(generics.RetrieveAPIView,generics.UpdateAPIView):
     queryset = Design.objects.all()
     serializer_class = DesignCreateSerializer
     permission_classes = [IsOwnerOrReadOnly]
-
     lookup_field = 'theme_name'
-
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
 
-class PostDeleteAPIView(generics.DestroyAPIView):
+# delete
+class PostDeleteAPIView(generics.RetrieveAPIView,generics.DestroyAPIView):
     queryset = Design.objects.all()
     serializer_class = DesignSerializer
     lookup_field = 'theme_name'
